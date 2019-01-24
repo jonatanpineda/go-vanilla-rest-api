@@ -1,28 +1,28 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"encoding/json"
 )
 
 type Item struct {
-	Id 	string	`json:id`
-	Name 	string	`json:name`
-	Price	float32	`json:price`
+	Id    string  `json:id`
+	Name  string  `json:name`
+	Price float32 `json:price`
 }
 
 func main() {
-	db := Database{ 
+	db := Database{
 		"1": Item{
-			Id: "1",
-			Name: "Shoes",
+			Id:    "1",
+			Name:  "Shoes",
 			Price: 50,
-		}, 
+		},
 		"2": Item{
-			Id: "2",
-			Name: "Socks",
+			Id:    "2",
+			Name:  "Socks",
 			Price: 5,
 		},
 	}
@@ -47,10 +47,10 @@ func (db Database) price(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	item := req.URL.Query().Get("item")
 	result, ok := db[item]
-	    if !ok {
-		    w.WriteHeader(http.StatusNotFound) // 404
-		    fmt.Fprintf(w, "no such item: %q\n", item)
-		    return
-	    }
+	if !ok {
+		w.WriteHeader(http.StatusNotFound) // 404
+		fmt.Fprintf(w, "no such item: %q\n", item)
+		return
+	}
 	json.NewEncoder(w).Encode(result)
 }
